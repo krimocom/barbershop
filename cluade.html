@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>حلاقة بريمو | دعم كامل للغات والعملات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dark: #9A7A32;
+    --bg-dark: #0D0D0D;
+    --bg-card: #161616;
+    --bg-input: #1E1E1E;
+    --text-main: #F0EDE8;
+    --text-muted: #8A8075;
+    --text-subtle: #4A453E;
+    --accent-red: #C0392B;
+    --accent-green: #27AE60;
+    --accent-orange: #E67E22;
+    --border: rgba(201,168,76,0.15);
+    --shadow: 0 8px 40px rgba(0,0,0,0.6);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:#0D0D0D; }
+  ::-webkit-scrollbar-thumb { background:var(--gold-dark); border-radius:3px; }
+
+  .page { display:none; min-height:100vh; animation: fadeIn .35s ease; }
+  .page.active { display:flex; flex-direction:column; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  #authPage {
+    background: radial-gradient(ellipse at top, #1A1408 0%, #0D0D0D 60%);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  #authPage::before {
+    content:'';
+    position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+  .auth-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    width: 100%; max-width: 420px;
+    box-shadow: var(--shadow), 0 0 60px rgba(201,168,76,0.05);
+    position: relative;
+    z-index:1;
+  }
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .logo-icon {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 20px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 32px; margin-bottom: 14px;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .auth-logo h1 { font-size: 26px; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
+  .auth-logo p  { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .auth-tabs {
+    display: flex; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow:hidden; margin-bottom:28px;
+  }
+  .auth-tab {
+    flex:1; padding: 11px; text-align:center; cursor:pointer;
+    font-family:'Cairo',sans-serif; font-size:14px; font-weight:600;
+    background:transparent; border:none; color:var(--text-muted);
+    transition:.25s;
+  }
+  .auth-tab.active { background:var(--gold); color:#000; }
+
+  .form-group { margin-bottom:18px; }
+  .form-group label { display:block; font-size:13px; color:var(--text-muted); margin-bottom:7px; font-weight:600; }
+  .form-group input {
+    width:100%; padding:13px 16px;
+    background:var(--bg-input); border:1px solid var(--border);
+    border-radius: var(--radius-sm); color:var(--text-main);
+    font-family:'Cairo',sans-serif; font-size:14px;
+    transition:.25s; outline:none;
+  }
+  .form-group input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.12); }
+
+  .btn-primary {
+    width:100%; padding:14px; background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    border:none; border-radius: var(--radius-sm); color:#000;
+    font-family:'Cairo',sans-serif; font-size:15px; font-weight:700;
+    cursor:pointer; transition:.25s; margin-top:4px;
+  }
+  .btn-primary:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 6px 24px rgba(201,168,76,0.3); }
+  .btn-primary:active { transform:translateY(0); }
+
+  .topbar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top:0; z-index:100;
+    backdrop-filter: blur(10px);
+  }
+  .topbar-logo { font-size:18px; font-weight:900; color:var(--gold); }
+  .topbar-actions { display:flex; gap:10px; }
+  .icon-btn {
+    width:40px; height:40px;
+    background:transparent; border:1px solid var(--border);
+    border-radius:10px; color:var(--text-muted); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; transition:.2s;
+  }
+  .icon-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+  .bottom-nav {
+    position: fixed; bottom:0; left:0; right:0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    display: flex; height: 64px;
+    z-index: 100;
+  }
+  .nav-item {
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px;
+    cursor:pointer; transition:.2s;
+    color:var(--text-subtle); font-size:10px; font-weight:600;
+    background:none; border:none; font-family:'Cairo',sans-serif;
+  }
+  .nav-item .nav-icon { font-size:20px; }
+  .nav-item.active { color:var(--gold); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px rgba(201,168,76,0.5)); }
+
+  .content { flex:1; padding:20px 16px 80px; overflow-y:auto; }
+
+  .greeting { margin-bottom:24px; }
+  .greeting h2 { font-size:22px; font-weight:700; }
+  .greeting p  { font-size:13px; color:var(--text-muted); margin-top:2px; }
+
+  .section-title {
+    font-size:15px; font-weight:700; color:var(--text-muted);
+    text-transform:uppercase; letter-spacing:1.5px;
+    margin-bottom:14px; padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .services-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;
+  }
+  .service-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden; cursor:pointer;
+    transition:.25s;
+  }
+  .service-card:hover { border-color:var(--gold); transform:translateY(-3px); box-shadow:0 8px 30px rgba(201,168,76,0.12); }
+  .service-img {
+    width:100%; height:100px; object-fit:cover;
+    background: linear-gradient(135deg, #1A1408, #252010);
+    display:flex; align-items:center; justify-content:center;
+    font-size:40px;
+  }
+  .service-info { padding:12px; }
+  .service-name { font-size:13px; font-weight:700; margin-bottom:6px; }
+  .service-meta { display:flex; justify-content:space-between; align-items:center; }
+  .service-price { font-size:14px; font-weight:900; color:var(--gold); }
+  .service-dur  { font-size:11px; color:var(--text-muted); }
+
+  .booking-header {
+    background: var(--bg-card);
+    border: 1px solid var(--border); border-radius:var(--radius);
+    padding:16px; display:flex; gap:14px; align-items:center;
+    margin-bottom:20px;
+  }
+  .booking-header .svc-icon { font-size:36px; }
+  .booking-header h3 { font-size:16px; font-weight:700; }
+  .booking-header p  { font-size:13px; color:var(--gold); font-weight:700; }
+
+  .date-picker { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:20px; }
+  .date-pill {
+    flex-shrink:0; padding:10px 16px; border-radius:30px;
+    border:1px solid var(--border); background:var(--bg-card);
+    cursor:pointer; text-align:center; transition:.2s;
+    font-family:'Cairo',sans-serif;
+  }
+  .date-pill .day-name { font-size:11px; color:var(--text-muted); }
+  .date-pill .day-num  { font-size:17px; font-weight:700; }
+  .date-pill.selected  { background:var(--gold); border-color:var(--gold); color:#000; }
+  .date-pill.selected .day-name { color:rgba(0,0,0,0.6); }
+
+  .time-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:20px; }
+  .time-pill {
+    padding:10px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--bg-card);
+    cursor:pointer; text-align:center; transition:.2s;
+    font-family:'Cairo',sans-serif; font-size:13px; font-weight:600;
+  }
+  .time-pill:hover { border-color:var(--gold); color:var(--gold); }
+  .time-pill.selected { background:var(--gold); border-color:var(--gold); color:#000; }
+  .time-pill.booked { opacity:.35; cursor:not-allowed; text-decoration:line-through; }
+
+  .appt-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px; margin-bottom:12px;
+    position:relative; overflow:hidden;
+  }
+  .appt-card::before {
+    content:''; position:absolute; right:0; top:0; bottom:0;
+    width:4px;
+  }
+  .appt-card.pending::before  { background:var(--accent-orange); }
+  .appt-card.accepted::before { background:var(--accent-green); }
+  .appt-card.rejected::before { background:var(--accent-red); }
+
+  .appt-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+  .appt-name { font-size:15px; font-weight:700; }
+  .badge {
+    padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700;
+  }
+  .badge.pending  { background:rgba(230,126,34,.15);  color:var(--accent-orange); }
+  .badge.accepted { background:rgba(39,174,96,.15);   color:var(--accent-green); }
+  .badge.rejected { background:rgba(192,57,43,.15);   color:var(--accent-red); }
+
+  .appt-meta { display:flex; gap:14px; font-size:12px; color:var(--text-muted); margin-bottom:12px; }
+  .appt-meta span::before { margin-left:4px; }
+
+  .btn-cancel {
+    background:transparent; border:1px solid rgba(192,57,43,.3);
+    border-radius:var(--radius-sm); color:var(--accent-red);
+    padding:8px 16px; font-family:'Cairo',sans-serif; font-size:12px;
+    font-weight:600; cursor:pointer; transition:.2s;
+  }
+  .btn-cancel:hover { background:rgba(192,57,43,.1); }
+
+  #adminPage { background: var(--bg-dark); }
+  .admin-header {
+    background: linear-gradient(135deg, #1A1408, var(--bg-card));
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .admin-header h2 { font-size:18px; font-weight:900; color:var(--gold); }
+
+  .admin-tabs {
+    display:flex; gap:0; border-bottom:1px solid var(--border);
+    overflow-x:auto; background:var(--bg-card);
+  }
+  .admin-tab {
+    padding:13px 18px; font-family:'Cairo',sans-serif; font-size:13px;
+    font-weight:600; color:var(--text-muted); background:none; border:none;
+    cursor:pointer; border-bottom:2px solid transparent; transition:.2s;
+    white-space:nowrap;
+  }
+  .admin-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+  .admin-content { padding:16px; padding-bottom:30px; overflow-y:auto; flex:1; }
+
+  .admin-booking-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px; margin-bottom:12px;
+  }
+  .admin-booking-top { display:flex; justify-content:space-between; margin-bottom:8px; }
+  .admin-actions { display:flex; gap:8px; margin-top:12px; }
+  .btn-accept {
+    flex:1; padding:9px; background:rgba(39,174,96,.15); border:1px solid rgba(39,174,96,.3);
+    border-radius:var(--radius-sm); color:var(--accent-green);
+    font-family:'Cairo',sans-serif; font-size:13px; font-weight:700;
+    cursor:pointer; transition:.2s;
+  }
+  .btn-accept:hover { background:rgba(39,174,96,.25); }
+  .btn-reject {
+    flex:1; padding:9px; background:rgba(192,57,43,.1); border:1px solid rgba(192,57,43,.25);
+    border-radius:var(--radius-sm); color:var(--accent-red);
+    font-family:'Cairo',sans-serif; font-size:13px; font-weight:700;
+    cursor:pointer; transition:.2s;
+  }
+  .btn-reject:hover { background:rgba(192,57,43,.2); }
+
+  .svc-edit-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px; margin-bottom:12px;
+  }
+  .svc-edit-card .edit-row { display:flex; gap:8px; margin-bottom:8px; }
+  .edit-input {
+    flex:1; padding:10px 12px; background:var(--bg-input);
+    border:1px solid var(--border); border-radius:var(--radius-sm);
+    color:var(--text-main); font-family:'Cairo',sans-serif; font-size:13px;
+    outline:none;
+  }
+  .edit-input:focus { border-color:var(--gold); }
+  .btn-save {
+    padding:10px 16px; background:rgba(201,168,76,.15); border:1px solid rgba(201,168,76,.3);
+    border-radius:var(--radius-sm); color:var(--gold);
+    font-family:'Cairo',sans-serif; font-size:12px; font-weight:700;
+    cursor:pointer; transition:.2s;
+  }
+  .btn-save:hover { background:rgba(201,168,76,.25); }
+
+  .settings-row {
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px;
+  }
+  .settings-row label { font-size:14px; font-weight:600; }
+  .settings-row small { font-size:12px; color:var(--text-muted); display:block; margin-top:2px; }
+
+  .toggle { position:relative; width:46px; height:26px; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-slider {
+    position:absolute; inset:0; background:#333; border-radius:30px; cursor:pointer; transition:.3s;
+  }
+  .toggle-slider::before {
+    content:''; position:absolute;
+    width:18px; height:18px; left:4px; bottom:4px;
+    background:#fff; border-radius:50%; transition:.3s;
+  }
+  .toggle input:checked + .toggle-slider { background:var(--gold); }
+  .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
+
+  .color-options { display:flex; gap:10px; flex-wrap:wrap; }
+  .color-dot {
+    width:30px; height:30px; border-radius:50%; cursor:pointer;
+    border:2px solid transparent; transition:.2s;
+  }
+  .color-dot.active { border-color:#fff; transform:scale(1.1); }
+
+  .drawer-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.7);
+    z-index:200; display:none; backdrop-filter:blur(4px);
+  }
+  .drawer-overlay.open { display:block; animation:fadeIn .2s; }
+  .drawer {
+    position:fixed; top:0; right:0; bottom:0; width:260px;
+    background:var(--bg-card); border-left:1px solid var(--border);
+    z-index:201; padding:0; transform:translateX(100%);
+    transition:.3s cubic-bezier(.4,0,.2,1);
+  }
+  .drawer.open { transform:translateX(0); }
+  .drawer-head {
+    padding:24px 20px 20px; border-bottom:1px solid var(--border);
+  }
+  .drawer-head h3 { font-size:16px; font-weight:700; }
+  .drawer-head p  { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .drawer-item {
+    display:flex; align-items:center; gap:14px;
+    padding:16px 20px; cursor:pointer; transition:.2s; border:none;
+    background:none; width:100%; text-align:right; font-family:'Cairo',sans-serif;
+    font-size:14px; color:var(--text-main);
+  }
+  .drawer-item:hover { background:rgba(201,168,76,.06); color:var(--gold); }
+  .drawer-item .di-icon { font-size:18px; width:22px; text-align:center; }
+
+  .loader { text-align:center; padding:40px; color:var(--text-muted); }
+  .spinner {
+    width:32px; height:32px; border:3px solid var(--border);
+    border-top-color:var(--gold); border-radius:50%;
+    animation:spin .7s linear infinite; margin:0 auto 12px;
+  }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  #toast {
+    position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--bg-card); border:1px solid var(--border);
+    padding:12px 22px; border-radius:30px; font-size:13px; font-weight:600;
+    z-index:999; opacity:0; transition:.3s; pointer-events:none;
+    white-space:nowrap; box-shadow:var(--shadow);
+  }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  #toast.success { border-color:var(--accent-green); color:var(--accent-green); }
+  #toast.error   { border-color:var(--accent-red);   color:var(--accent-red); }
+
+  .empty { text-align:center; padding:50px 20px; }
+  .empty .empty-icon { font-size:48px; margin-bottom:12px; opacity:.3; }
+  .empty p { color:var(--text-muted); font-size:14px; }
+
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.8);
+    z-index:300; display:none; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .modal-overlay.open { display:flex; animation:fadeIn .2s; }
+  .modal {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:20px; padding:28px; max-width:380px; width:100%;
+    box-shadow:var(--shadow);
+  }
+  .modal h3 { font-size:18px; font-weight:700; margin-bottom:10px; }
+  .modal p  { font-size:14px; color:var(--text-muted); margin-bottom:22px; line-height:1.6; }
+  .modal-actions { display:flex; gap:10px; }
+  .btn-outline {
+    flex:1; padding:11px; background:transparent; border:1px solid var(--border);
+    border-radius:var(--radius-sm); color:var(--text-muted);
+    font-family:'Cairo',sans-serif; font-size:14px; cursor:pointer; transition:.2s;
+  }
+  .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+
+  .lang-menu {
+    position: relative;
+    display: inline-block;
+  }
+  .lang-dropdown {
+    display: none;
+    position: absolute;
+    top: 45px;
+    left: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    min-width: 130px;
+    z-index: 150;
+    box-shadow: var(--shadow);
+  }
+  .lang-dropdown button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    color: var(--text-main);
+    cursor: pointer;
+    text-align: right;
+  }
+  .lang-dropdown button:hover {
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+  }
+  .lang-menu.active .lang-dropdown {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH PAGE -->
+<div class="page active" id="authPage">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-icon">✂️</div>
+      <h1 data-i18n="brand_name">PRIMO CUT</h1>
+      <p data-i18n="brand_slogan">أفضل تجربة حلاقة في المدينة</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')" data-i18n="login_btn">تسجيل الدخول</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')" data-i18n="register_btn">إنشاء حساب</button>
+    </div>
+    <div id="loginForm">
+      <div class="form-group">
+        <label data-i18n="email_label">البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" placeholder="example@email.com" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label data-i18n="password_label">كلمة المرور</label>
+        <input type="password" id="loginPass" placeholder="••••••••" dir="ltr">
+      </div>
+      <button class="btn-primary" onclick="handleLogin()" data-i18n="login_btn">دخول</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div class="form-group">
+        <label data-i18n="fullname_label">الاسم الكامل</label>
+        <input type="text" id="regName" placeholder="محمد الحلاوي">
+      </div>
+      <div class="form-group">
+        <label data-i18n="email_label">البريد الإلكتروني</label>
+        <input type="email" id="regEmail" placeholder="example@email.com" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label data-i18n="password_label">كلمة المرور</label>
+        <input type="password" id="regPass" placeholder="••••••••" dir="ltr">
+      </div>
+      <button class="btn-primary" onclick="handleRegister()" data-i18n="register_btn">إنشاء الحساب</button>
+    </div>
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--text-muted)" data-i18n="admin_hint">
+      للدخول كمدير: admin@primo.ma / admin123
+    </p>
+  </div>
+</div>
+
+<!-- CLIENT APP -->
+<div class="page" id="clientApp">
+  <div class="topbar">
+    <div class="topbar-logo">✂️ PRIMO</div>
+    <div class="topbar-actions">
+      <div class="lang-menu" id="langMenu">
+        <button class="icon-btn" onclick="toggleLangDropdown()">🌐</button>
+        <div class="lang-dropdown">
+          <button onclick="setLanguage('ar')">🇸🇦 العربية</button>
+          <button onclick="setLanguage('en')">🇬🇧 English</button>
+          <button onclick="setLanguage('fr')">🇫🇷 Français</button>
+          <button onclick="setLanguage('es')">🇪🇸 Español</button>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="openDrawer()">☰</button>
+    </div>
+  </div>
+
+  <div class="content" id="homeContent">
+    <div class="greeting">
+      <h2><span data-i18n="hello_prefix">مرحباً،</span> <span id="userName">صديق</span> 👋</h2>
+      <p data-i18n="greeting_sub">احجز موعدك بخطوات بسيطة</p>
+    </div>
+    <div class="section-title" data-i18n="services_title">خدماتنا</div>
+    <div class="services-grid" id="servicesGrid"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+
+  <div class="content" id="bookingContent" style="display:none">
+    <button onclick="showSection('home')" style="background:none;border:none;color:var(--text-muted);font-family:'Cairo',sans-serif;font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+      <span>←</span> <span data-i18n="back_to_services">رجوع للخدمات</span>
+    </button>
+    <div class="booking-header" id="bookingHeader"></div>
+    <div class="section-title" data-i18n="select_date">اختر التاريخ</div>
+    <div class="date-picker" id="datePicker"></div>
+    <div class="section-title" data-i18n="select_time">اختر الوقت</div>
+    <div class="time-grid" id="timeGrid"></div>
+    <button class="btn-primary" onclick="submitBooking()"><span data-i18n="book_now_btn">📅 احجز الآن</span></button>
+  </div>
+
+  <div class="content" id="appointmentsContent" style="display:none">
+    <div class="greeting">
+      <h2 data-i18n="my_appointments_title">مواعيدي 📋</h2>
+      <p data-i18n="appointments_sub">جميع حجوزاتك في مكان واحد</p>
+    </div>
+    <div id="appointmentsList"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+
+  <div class="content" id="profileContent" style="display:none">
+    <div class="greeting">
+      <h2 data-i18n="profile_title">حسابي 👤</h2>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:4px;" data-i18n="fullname_label">الاسم</p>
+      <p id="profileName" style="font-size:16px;font-weight:700"></p>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:4px;" data-i18n="email_label">البريد الإلكتروني</p>
+      <p id="profileEmail" style="font-size:14px;direction:ltr;"></p>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;" id="statsCard">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;" data-i18n="stats_label">إحصائياتك</p>
+      <div style="display:flex;gap:16px;justify-content:space-around;text-align:center;">
+        <div><p class="service-price" id="statTotal">0</p><p style="font-size:11px;color:var(--text-muted)" data-i18n="total_label">إجمالي</p></div>
+        <div><p style="font-size:20px;font-weight:900;color:var(--accent-green)" id="statAccepted">0</p><p style="font-size:11px;color:var(--text-muted)" data-i18n="accepted_label">مقبول</p></div>
+        <div><p style="font-size:20px;font-weight:900;color:var(--accent-orange)" id="statPending">0</p><p style="font-size:11px;color:var(--text-muted)" data-i18n="pending_label">انتظار</p></div>
+      </div>
+    </div>
+    <button class="btn-primary" style="background:rgba(192,57,43,.2);color:var(--accent-red);border:1px solid rgba(192,57,43,.3);" onclick="logout()" data-i18n="logout_btn">تسجيل الخروج</button>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="showSection('home')" id="nav-home">
+      <span class="nav-icon">🏠</span><span data-i18n="nav_home">الرئيسية</span>
+    </button>
+    <button class="nav-item" onclick="showSection('booking')" id="nav-booking">
+      <span class="nav-icon">✂️</span><span data-i18n="nav_book">احجز</span>
+    </button>
+    <button class="nav-item" onclick="showSection('appointments')" id="nav-appointments">
+      <span class="nav-icon">📋</span><span data-i18n="nav_appointments">مواعيدي</span>
+    </button>
+    <button class="nav-item" onclick="showSection('profile')" id="nav-profile">
+      <span class="nav-icon">👤</span><span data-i18n="nav_profile">حسابي</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page" id="adminPage">
+  <div class="admin-header">
+    <div>
+      <h2 data-i18n="admin_dashboard">لوحة الإدارة</h2>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">PRIMO CUT ✂️</p>
+    </div>
+    <button class="icon-btn" onclick="logout()" title="خروج">🚪</button>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchAdminTab('bookings')" data-i18n="admin_tab_bookings">الحجوزات</button>
+    <button class="admin-tab" onclick="switchAdminTab('services')" data-i18n="admin_tab_services">الخدمات</button>
+    <button class="admin-tab" onclick="switchAdminTab('settings')" data-i18n="admin_tab_settings">الإعدادات</button>
+  </div>
+
+  <div class="admin-content" id="adminBookings">
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <button onclick="filterAdmin('all')"     id="af-all"      class="time-pill selected" style="font-size:12px;padding:7px 14px;" data-i18n="filter_all">الكل</button>
+      <button onclick="filterAdmin('pending')" id="af-pending"  class="time-pill" style="font-size:12px;padding:7px 14px;" data-i18n="filter_pending">انتظار</button>
+      <button onclick="filterAdmin('accepted')"id="af-accepted" class="time-pill" style="font-size:12px;padding:7px 14px;" data-i18n="filter_accepted">مقبول</button>
+      <button onclick="filterAdmin('rejected')"id="af-rejected" class="time-pill" style="font-size:12px;padding:7px 14px;" data-i18n="filter_rejected">مرفوض</button>
+    </div>
+    <div id="adminBookingsList"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+
+  <div class="admin-content" id="adminServices" style="display:none">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;" data-i18n="services_edit_hint">عدّل معلومات كل خدمة ثم اضغط "حفظ"</p>
+    <div id="adminServicesList"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+
+  <div class="admin-content" id="adminSettings" style="display:none">
+    <p class="section-title" style="margin-bottom:14px;" data-i18n="working_hours_title">أوقات العمل</p>
+    <div class="settings-row">
+      <div><label data-i18n="day_sat">السبت</label><small data-i18n="open_booking_hint">هل الحجز مفتوح؟</small></div>
+      <label class="toggle"><input type="checkbox" id="satToggle" onchange="saveWorkSettings()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><label data-i18n="day_sun">الأحد</label><small data-i18n="open_booking_hint">هل الحجز مفتوح؟</small></div>
+      <label class="toggle"><input type="checkbox" id="sunToggle" onchange="saveWorkSettings()"><span class="toggle-slider"></span></label>
+    </div>
+    <p class="section-title" style="margin:20px 0 14px;" data-i18n="app_color_title">لون التطبيق</p>
+    <div class="settings-row">
+      <div><label data-i18n="primary_color_label">اللون الرئيسي</label><small data-i18n="color_applies_hint">يطبق على الأزرار والعناصر</small></div>
+      <div class="color-options" id="colorOptions">
+        <div class="color-dot active" style="background:#C9A84C" onclick="changeTheme('#C9A84C','#9A7A32')" title="ذهبي"></div>
+        <div class="color-dot" style="background:#3498DB" onclick="changeTheme('#3498DB','#2471A3')" title="أزرق"></div>
+        <div class="color-dot" style="background:#27AE60" onclick="changeTheme('#27AE60','#1E8449')" title="أخضر"></div>
+        <div class="color-dot" style="background:#E74C3C" onclick="changeTheme('#E74C3C','#C0392B')" title="أحمر"></div>
+        <div class="color-dot" style="background:#9B59B6" onclick="changeTheme('#9B59B6','#7D3C98')" title="بنفسجي"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3 id="drawerName">المستخدم</h3>
+    <p id="drawerEmail" style="direction:ltr;font-size:12px;color:var(--text-muted);"></p>
+  </div>
+  <button class="drawer-item" onclick="closeDrawer();showSection('home')"><span class="di-icon">🏠</span><span data-i18n="nav_home">الرئيسية</span></button>
+  <button class="drawer-item" onclick="closeDrawer();showSection('appointments')"><span class="di-icon">📋</span><span data-i18n="nav_appointments">مواعيدي</span></button>
+  <button class="drawer-item" onclick="closeDrawer();showSection('profile')"><span class="di-icon">👤</span><span data-i18n="nav_profile">حسابي</span></button>
+  <hr style="border-color:var(--border);margin:8px 20px;">
+  <button class="drawer-item" onclick="logout()" style="color:var(--accent-red)"><span class="di-icon">🚪</span><span data-i18n="logout_btn">تسجيل الخروج</span></button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="cancelModal">
+  <div class="modal">
+    <h3 data-i18n="cancel_modal_title">إلغاء الموعد ؟</h3>
+    <p data-i18n="cancel_modal_text">هل أنت متأكد أنك تريد إلغاء هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeCancelModal()" data-i18n="cancel_modal_no">لا، تراجع</button>
+      <button class="btn-primary" style="background:rgba(192,57,43,.8);color:#fff;" onclick="confirmCancel()" data-i18n="cancel_modal_yes">نعم، إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, set, get, push, onValue, update, remove, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyClbkKJpc4Ic2B_4Fm2rg0cy3xTA3kXj0Q",
+  authDomain: "barber-booking-10e97.firebaseapp.com",
+  databaseURL: "https://barber-booking-10e97-default-rtdb.firebaseio.com",
+  projectId: "barber-booking-10e97",
+  storageBucket: "barber-booking-10e97.appspot.com",
+  appId: "1:582488443587:android:362ab325680f3570f07076"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getDatabase(app);
+
+const ADMIN_EMAIL = "mrwfybrw@gmail.com";
+const ADMIN_PASS  = "Younge tele.";
+const MAX_CONCURRENT = 4;
+const TIMES = ["09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30"];
+
+let currentUser = null;
+let selectedService = null;
+let selectedDate = null;
+let selectedTime = null;
+let cancelBookingId = null;
+let adminFilter = 'all';
+let workSettings = { sat: false, sun: false };
+let allAdminBookings = {};
+
+// ---------- MULTI-LANGUAGE TRANSLATIONS ----------
+const translations = {
+  ar: {
+    brand_name: "PRIMO CUT", brand_slogan: "أفضل تجربة حلاقة في المدينة",
+    login_btn: "تسجيل الدخول", register_btn: "إنشاء حساب", email_label: "البريد الإلكتروني",
+    password_label: "كلمة المرور", fullname_label: "الاسم الكامل", admin_hint: "للدخول كمدير: admin@primo.ma / admin123",
+    hello_prefix: "مرحباً،", greeting_sub: "احجز موعدك بخطوات بسيطة", services_title: "خدماتنا",
+    back_to_services: "رجوع للخدمات", select_date: "اختر التاريخ", select_time: "اختر الوقت",
+    book_now_btn: "📅 احجز الآن", my_appointments_title: "مواعيدي 📋", appointments_sub: "جميع حجوزاتك في مكان واحد",
+    profile_title: "حسابي 👤", stats_label: "إحصائياتك", total_label: "إجمالي", accepted_label: "مقبول",
+    pending_label: "انتظار", logout_btn: "تسجيل الخروج", nav_home: "الرئيسية", nav_book: "احجز",
+    nav_appointments: "مواعيدي", nav_profile: "حسابي", admin_dashboard: "لوحة الإدارة",
+    admin_tab_bookings: "الحجوزات", admin_tab_services: "الخدمات", admin_tab_settings: "الإعدادات",
+    filter_all: "الكل", filter_pending: "انتظار", filter_accepted: "مقبول", filter_rejected: "مرفوض",
+    services_edit_hint: "عدّل معلومات كل خدمة ثم اضغط 'حفظ'", working_hours_title: "أوقات العمل",
+    day_sat: "السبت", day_sun: "الأحد", open_booking_hint: "هل الحجز مفتوح؟", app_color_title: "لون التطبيق",
+    primary_color_label: "اللون الرئيسي", color_applies_hint: "يطبق على الأزرار والعناصر",
+    cancel_modal_title: "إلغاء الموعد ؟", cancel_modal_text: "هل أنت متأكد أنك تريد إلغاء هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.",
+    cancel_modal_no: "لا، تراجع", cancel_modal_yes: "نعم، إلغاء",
+    toast_login_error: "بيانات الدخول غير صحيحة", toast_reg_error: "خطأ: البريد مستخدم بالفعل",
+    toast_reg_success: "تم إنشاء الحساب بنجاح! 🎉", toast_fill_fields: "يرجى ملء جميع الحقول",
+    toast_pass_length: "كلمة المرور 6 أحرف على الأقل", toast_booking_success: "✅ تم إرسال الحجز! في انتظار التأكيد",
+    toast_select_datetime: "اختر التاريخ والوقت", toast_max_booking: `لا يمكن تجاوز ${MAX_CONCURRENT} حجوزات في نفس الوقت`,
+    toast_cancel_success: "تم إلغاء الموعد", toast_save_service: "✅ تم حفظ الخدمة",
+    toast_save_work: "✅ تم حفظ إعدادات العمل", toast_theme_changed: "🎨 تم تغيير اللون",
+    toast_admin_accept: "✅ تم قبول الحجز", toast_admin_reject: "❌ تم رفض الحجز",
+    status_pending: "قيد الانتظار", status_accepted: "مقبول", status_rejected: "مرفوض", status_cancelled: "ملغى",
+    no_appointments: "لا توجد مواعيد بعد", no_bookings: "لا توجد طلبات",
+    day_mon: "الاثنين", day_tue: "الثلاثاء", day_wed: "الأربعاء", day_thu: "الخميس", day_fri: "الجمعة",
+    currency: "MAD", duration_unit: "دقيقة", price_label: "السعر", save_btn: "💾 حفظ"
+  },
+  en: {
+    brand_name: "PRIMO CUT", brand_slogan: "Best barber experience in town",
+    login_btn: "Login", register_btn: "Sign up", email_label: "Email", password_label: "Password",
+    fullname_label: "Full name", admin_hint: "Admin access: admin@primo.ma / admin123",
+    hello_prefix: "Hello,", greeting_sub: "Book your appointment in few steps", services_title: "Our Services",
+    back_to_services: "← Back to services", select_date: "Select date", select_time: "Select time",
+    book_now_btn: "📅 Book now", my_appointments_title: "My Appointments 📋", appointments_sub: "All your bookings in one place",
+    profile_title: "My Account 👤", stats_label: "Your Stats", total_label: "Total", accepted_label: "Accepted",
+    pending_label: "Pending", logout_btn: "Logout", nav_home: "Home", nav_book: "Book",
+    nav_appointments: "Appointments", nav_profile: "Profile", admin_dashboard: "Admin Dashboard",
+    admin_tab_bookings: "Bookings", admin_tab_services: "Services", admin_tab_settings: "Settings",
+    filter_all: "All", filter_pending: "Pending", filter_accepted: "Accepted", filter_rejected: "Rejected",
+    services_edit_hint: "Edit each service info then click Save", working_hours_title: "Working Hours",
+    day_sat: "Saturday", day_sun: "Sunday", open_booking_hint: "Open for booking?", app_color_title: "App Color",
+    primary_color_label: "Primary color", color_applies_hint: "Applies to buttons and elements",
+    cancel_modal_title: "Cancel appointment?", cancel_modal_text: "Are you sure you want to cancel this appointment? This action cannot be undone.",
+    cancel_modal_no: "No, go back", cancel_modal_yes: "Yes, cancel",
+    toast_login_error: "Invalid login credentials", toast_reg_error: "Error: email already in use",
+    toast_reg_success: "Account created successfully! 🎉", toast_fill_fields: "Please fill all fields",
+    toast_pass_length: "Password must be at least 6 characters", toast_booking_success: "✅ Booking sent! Waiting for confirmation",
+    toast_select_datetime: "Select date and time", toast_max_booking: `Cannot exceed ${MAX_CONCURRENT} active bookings`,
+    toast_cancel_success: "Appointment cancelled", toast_save_service: "✅ Service saved",
+    toast_save_work: "✅ Work settings saved", toast_theme_changed: "🎨 Theme color changed",
+    toast_admin_accept: "✅ Booking accepted", toast_admin_reject: "❌ Booking rejected",
+    status_pending: "Pending", status_accepted: "Accepted", status_rejected: "Rejected", status_cancelled: "Cancelled",
+    no_appointments: "No appointments yet", no_bookings: "No bookings",
+    day_mon: "Monday", day_tue: "Tuesday", day_wed: "Wednesday", day_thu: "Thursday", day_fri: "Friday",
+    currency: "$", duration_unit: "min", price_label: "Price", save_btn: "💾 Save"
+  },
+  fr: {
+    brand_name: "PRIMO CUT", brand_slogan: "Meilleure expérience de coiffure en ville",
+    login_btn: "Connexion", register_btn: "S'inscrire", email_label: "E-mail", password_label: "Mot de passe",
+    fullname_label: "Nom complet", admin_hint: "Accès admin: admin@primo.ma / admin123",
+    hello_prefix: "Bonjour,", greeting_sub: "Réservez votre rendez-vous en quelques étapes", services_title: "Nos services",
+    back_to_services: "← Retour aux services", select_date: "Choisir la date", select_time: "Choisir l'heure",
+    book_now_btn: "📅 Réserver", my_appointments_title: "Mes rendez-vous 📋", appointments_sub: "Toutes vos réservations au même endroit",
+    profile_title: "Mon compte 👤", stats_label: "Vos statistiques", total_label: "Total", accepted_label: "Accepté",
+    pending_label: "En attente", logout_btn: "Déconnexion", nav_home: "Accueil", nav_book: "Réserver",
+    nav_appointments: "Rendez-vous", nav_profile: "Profil", admin_dashboard: "Tableau de bord",
+    admin_tab_bookings: "Réservations", admin_tab_services: "Services", admin_tab_settings: "Paramètres",
+    filter_all: "Tous", filter_pending: "En attente", filter_accepted: "Accepté", filter_rejected: "Rejeté",
+    services_edit_hint: "Modifiez chaque service puis cliquez sur Enregistrer", working_hours_title: "Horaires d'ouverture",
+    day_sat: "Samedi", day_sun: "Dimanche", open_booking_hint: "Ouvert pour réservation ?", app_color_title: "Couleur de l'application",
+    primary_color_label: "Couleur principale", color_applies_hint: "S'applique aux boutons et éléments",
+    cancel_modal_title: "Annuler le rendez-vous ?", cancel_modal_text: "Êtes-vous sûr de vouloir annuler ce rendez-vous ? Cette action est irréversible.",
+    cancel_modal_no: "Non, retour", cancel_modal_yes: "Oui, annuler",
+    toast_login_error: "Identifiants incorrects", toast_reg_error: "Erreur : e-mail déjà utilisé",
+    toast_reg_success: "Compte créé avec succès ! 🎉", toast_fill_fields: "Veuillez remplir tous les champs",
+    toast_pass_length: "Le mot de passe doit comporter au moins 6 caractères", toast_booking_success: "✅ Réservation envoyée ! En attente de confirmation",
+    toast_select_datetime: "Choisissez la date et l'heure", toast_max_booking: `Impossible de dépasser ${MAX_CONCURRENT} réservations actives`,
+    toast_cancel_success: "Rendez-vous annulé", toast_save_service: "✅ Service enregistré",
+    toast_save_work: "✅ Paramètres de travail enregistrés", toast_theme_changed: "🎨 Couleur du thème modifiée",
+    toast_admin_accept: "✅ Réservation acceptée", toast_admin_reject: "❌ Réservation rejetée",
+    status_pending: "En attente", status_accepted: "Accepté", status_rejected: "Rejeté", status_cancelled: "Annulé",
+    no_appointments: "Aucun rendez-vous pour le moment", no_bookings: "Aucune réservation",
+    day_mon: "Lundi", day_tue: "Mardi", day_wed: "Mercredi", day_thu: "Jeudi", day_fri: "Vendredi",
+    currency: "€", duration_unit: "min", price_label: "Prix", save_btn: "💾 Enregistrer"
+  },
+  es: {
+    brand_name: "PRIMO CUT", brand_slogan: "La mejor experiencia de barbería en la ciudad",
+    login_btn: "Iniciar sesión", register_btn: "Registrarse", email_label: "Correo electrónico", password_label: "Contraseña",
+    fullname_label: "Nombre completo", admin_hint: "Acceso admin: admin@primo.ma / admin123",
+    hello_prefix: "Hola,", greeting_sub: "Reserva tu cita en pocos pasos", services_title: "Nuestros servicios",
+    back_to_services: "← Volver a servicios", select_date: "Elige fecha", select_time: "Elige hora",
+    book_now_btn: "📅 Reservar ahora", my_appointments_title: "Mis citas 📋", appointments_sub: "Todas tus reservas en un solo lugar",
+    profile_title: "Mi cuenta 👤", stats_label: "Tus estadísticas", total_label: "Total", accepted_label: "Aceptado",
+    pending_label: "Pendiente", logout_btn: "Cerrar sesión", nav_home: "Inicio", nav_book: "Reservar",
+    nav_appointments: "Citas", nav_profile: "Perfil", admin_dashboard: "Panel de administración",
+    admin_tab_bookings: "Reservas", admin_tab_services: "Servicios", admin_tab_settings: "Ajustes",
+    filter_all: "Todos", filter_pending: "Pendiente", filter_accepted: "Aceptado", filter_rejected: "Rechazado",
+    services_edit_hint: "Edita cada servicio y luego haz clic en Guardar", working_hours_title: "Horario laboral",
+    day_sat: "Sábado", day_sun: "Domingo", open_booking_hint: "¿Abierto para reservas?", app_color_title: "Color de la app",
+    primary_color_label: "Color principal", color_applies_hint: "Se aplica a botones y elementos",
+    cancel_modal_title: "¿Cancelar cita?", cancel_modal_text: "¿Estás seguro de que quieres cancelar esta cita? Esta acción no se puede deshacer.",
+    cancel_modal_no: "No, volver", cancel_modal_yes: "Sí, cancelar",
+    toast_login_error: "Credenciales incorrectas", toast_reg_error: "Error: correo ya en uso",
+    toast_reg_success: "¡Cuenta creada exitosamente! 🎉", toast_fill_fields: "Por favor complete todos los campos",
+    toast_pass_length: "La contraseña debe tener al menos 6 caracteres", toast_booking_success: "✅ ¡Reserva enviada! Esperando confirmación",
+    toast_select_datetime: "Seleccione fecha y hora", toast_max_booking: `No se pueden exceder ${MAX_CONCURRENT} reservas activas`,
+    toast_cancel_success: "Cita cancelada", toast_save_service: "✅ Servicio guardado",
+    toast_save_work: "✅ Configuración de trabajo guardada", toast_theme_changed: "🎨 Color del tema cambiado",
+    toast_admin_accept: "✅ Reserva aceptada", toast_admin_reject: "❌ Reserva rechazada",
+    status_pending: "Pendiente", status_accepted: "Aceptado", status_rejected: "Rechazado", status_cancelled: "Cancelado",
+    no_appointments: "Aún no hay citas", no_bookings: "No hay reservas",
+    day_mon: "Lunes", day_tue: "Martes", day_wed: "Miércoles", day_thu: "Jueves", day_fri: "Viernes",
+    currency: "€", duration_unit: "min", price_label: "Precio", save_btn: "💾 Guardar"
+  }
+};
+
+// Service names translation mapping
+const serviceNames = {
+  ar: {
+    s1: "قصة الشعر", s2: "حلاقة اللحية", s3: "قصة + لحية", s4: "تسريح الشعر", s5: "الحلاقة الكاملة", s6: "العناية بالأظافر"
+  },
+  en: {
+    s1: "Haircut", s2: "Beard Trim", s3: "Haircut + Beard", s4: "Hair Styling", s5: "Full Grooming", s6: "Nail Care"
+  },
+  fr: {
+    s1: "Coupe de cheveux", s2: "Taille de barbe", s3: "Coupe + Barbe", s4: "Coiffage", s5: "Soin complet", s6: "Soin des ongles"
+  },
+  es: {
+    s1: "Corte de pelo", s2: "Arreglo de barba", s3: "Corte + Barba", s4: "Peinado", s5: "Aseo completo", s6: "Cuidado de uñas"
+  }
+};
+
+let currentLang = localStorage.getItem('app_lang') || 'ar';
+function t(key) {
+  return translations[currentLang]?.[key] || translations.ar[key] || key;
+}
+function getServiceName(serviceId) {
+  return serviceNames[currentLang]?.[serviceId] || serviceNames.ar[serviceId] || "Service";
+}
+function formatPrice(price) {
+  return `${price} ${t('currency')}`;
+}
+function formatDuration(duration) {
+  return `${duration} ${t('duration_unit')}`;
+}
+
+function updateAllTexts() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key) el.innerText = t(key);
+  });
+  // Update admin services save buttons text
+  document.querySelectorAll('.btn-save').forEach(btn => {
+    btn.innerHTML = t('save_btn');
+  });
+  // Refresh dynamic content
+  if (document.getElementById('clientApp').classList.contains('active')) {
+    if (document.getElementById('homeContent').style.display !== 'none') loadServices();
+    else if (document.getElementById('bookingContent').style.display !== 'none' && selectedService) renderBookingForm();
+    else if (document.getElementById('appointmentsContent').style.display !== 'none') loadMyAppointments();
+    else if (document.getElementById('profileContent').style.display !== 'none') loadProfileStats();
+  } else if (document.getElementById('adminPage').classList.contains('active')) {
+    renderAdminBookings();
+    loadAdminServices(); // will re-render with current language
+    const satLabel = document.querySelector('#adminSettings .settings-row:first-child label');
+    const sunLabel = document.querySelector('#adminSettings .settings-row:nth-child(2) label');
+    if(satLabel) satLabel.innerText = t('day_sat');
+    if(sunLabel) sunLabel.innerText = t('day_sun');
+    const smallHint = document.querySelectorAll('#adminSettings .settings-row small');
+    if(smallHint.length) smallHint.forEach(s => s.innerText = t('open_booking_hint'));
+  }
+}
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('app_lang', lang);
+  document.documentElement.setAttribute('lang', lang === 'ar' ? 'ar' : 'en');
+  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  updateAllTexts();
+}
+window.setLanguage = setLanguage;
+window.toggleLangDropdown = () => {
+  document.getElementById('langMenu').classList.toggle('active');
+};
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('langMenu')?.contains(e.target)) {
+    document.getElementById('langMenu')?.classList.remove('active');
+  }
+});
+window.showToast = (msgKey, type='success') => {
+  let msg = t(msgKey);
+  const tEl = document.getElementById('toast');
+  tEl.textContent = msg; tEl.className = 'show ' + type;
+  setTimeout(() => tEl.className = '', 2800);
+};
+
+// DEFAULT SERVICES
+const DEFAULT_SERVICES = [
+  { id:'s1', name_orig:'Haircut', price:30, duration:30, icon:'💈' },
+  { id:'s2', name_orig:'Beard Trim', price:25, duration:20, icon:'🪒' },
+  { id:'s3', name_orig:'Haircut+Beard', price:50, duration:50, icon:'✂️' },
+  { id:'s4', name_orig:'Styling', price:20, duration:20, icon:'💆' },
+  { id:'s5', name_orig:'Full Grooming', price:70, duration:60, icon:'👑' },
+  { id:'s6', name_orig:'Nail Care', price:15, duration:20, icon:'💅' },
+];
+
+// AUTH STATE
+onAuthStateChanged(auth, user => {
+  if (user) {
+    currentUser = user;
+    if (user.email === ADMIN_EMAIL) {
+      showPage('adminPage');
+      loadAdminBookings();
+      loadAdminServices();
+      loadWorkSettings();
+    } else {
+      showPage('clientApp');
+      document.getElementById('userName').textContent = user.displayName || 'صديق';
+      document.getElementById('profileName').textContent = user.displayName || '-';
+      document.getElementById('profileEmail').textContent = user.email;
+      document.getElementById('drawerName').textContent = user.displayName || 'المستخدم';
+      document.getElementById('drawerEmail').textContent = user.email;
+      showSection('home');
+      loadServices();
+    }
+  } else {
+    currentUser = null;
+    showPage('authPage');
+  }
+  updateAllTexts();
+});
+
+window.showPage = (id) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateAllTexts();
+};
+window.showSection = (sec) => {
+  ['homeContent','bookingContent','appointmentsContent','profileContent'].forEach(c =>
+    document.getElementById(c).style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (sec === 'home') {
+    document.getElementById('homeContent').style.display = 'block';
+    document.getElementById('nav-home').classList.add('active');
+    loadServices();
+  } else if (sec === 'booking') {
+    if (!selectedService) { showSection('home'); return; }
+    document.getElementById('bookingContent').style.display = 'block';
+    document.getElementById('nav-booking').classList.add('active');
+    renderBookingForm();
+  } else if (sec === 'appointments') {
+    document.getElementById('appointmentsContent').style.display = 'block';
+    document.getElementById('nav-appointments').classList.add('active');
+    loadMyAppointments();
+  } else if (sec === 'profile') {
+    document.getElementById('profileContent').style.display = 'block';
+    document.getElementById('nav-profile').classList.add('active');
+    loadProfileStats();
+  }
+  updateAllTexts();
+};
+
+window.switchAuthTab = (tab) => {
+  document.querySelectorAll('.auth-tab').forEach((t,i) =>
+    t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register')));
+  document.getElementById('loginForm').style.display    = tab==='login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab==='register' ? 'block' : 'none';
+};
+window.handleLogin = async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('toast_fill_fields','error'); return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    showToast('toast_login_error','error');
+  }
+};
+window.handleRegister = async () => {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  if (!name || !email || !pass) { showToast('toast_fill_fields','error'); return; }
+  if (pass.length < 6) { showToast('toast_pass_length','error'); return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await set(ref(db, `users/${cred.user.uid}`), { name, email, createdAt: Date.now() });
+    showToast('toast_reg_success');
+  } catch(e) {
+    showToast('toast_reg_error', 'error');
+  }
+};
+window.logout = async () => {
+  await signOut(auth);
+  closeDrawer();
+};
+
+window.loadServices = async () => {
+  const grid = document.getElementById('servicesGrid');
+  grid.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  const snap = await get(ref(db, 'services'));
+  let services = snap.exists() ? Object.values(snap.val()) : DEFAULT_SERVICES;
+  if (!snap.exists()) {
+    DEFAULT_SERVICES.forEach(s => set(ref(db, `services/${s.id}`), { id: s.id, name: s.name_orig, price: s.price, duration: s.duration, icon: s.icon }));
+  }
+  grid.innerHTML = services.map(s => {
+    const displayName = getServiceName(s.id);
+    return `
+      <div class="service-card" onclick="selectService('${s.id}')">
+        <div class="service-img">${s.icon||'✂️'}</div>
+        <div class="service-info">
+          <div class="service-name">${displayName}</div>
+          <div class="service-meta">
+            <span class="service-price">${formatPrice(s.price)}</span>
+            <span class="service-dur">⏱ ${formatDuration(s.duration)}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+};
+window.selectService = async (serviceId) => {
+  const snap = await get(ref(db, `services/${serviceId}`));
+  if (snap.exists()) {
+    selectedService = { id: serviceId, ...snap.val() };
+  } else {
+    const def = DEFAULT_SERVICES.find(s => s.id === serviceId);
+    selectedService = { id: serviceId, ...def };
+  }
+  selectedDate = null; selectedTime = null;
+  showSection('booking');
+};
+window.renderBookingForm = async () => {
+  if (!selectedService) return;
+  const displayName = getServiceName(selectedService.id);
+  document.getElementById('bookingHeader').innerHTML = `
+    <div class="svc-icon">${selectedService.icon||'✂️'}</div>
+    <div>
+      <h3>${displayName}</h3>
+      <p>${formatPrice(selectedService.price)} | ${formatDuration(selectedService.duration)}</p>
+    </div>`;
+  const snap = await get(ref(db,'settings/work'));
+  workSettings = snap.exists() ? snap.val() : { sat:false, sun:false };
+  const picker = document.getElementById('datePicker');
+  picker.innerHTML = '';
+  const daysNames = [t('day_sun'), t('day_mon'), t('day_tue'), t('day_wed'), t('day_thu'), t('day_fri'), t('day_sat')];
+  let count = 0; let d = new Date();
+  while (count < 4) {
+    d = new Date(); d.setDate(d.getDate() + count + 1);
+    const dow = d.getDay();
+    if ((dow===6 && !workSettings.sat) || (dow===0 && !workSettings.sun)) { count++; continue; }
+    const dateStr = d.toISOString().split('T')[0];
+    const pill = document.createElement('div');
+    pill.className = 'date-pill' + (selectedDate===dateStr ? ' selected' : '');
+    pill.innerHTML = `<div class="day-name">${daysNames[dow]}</div><div class="day-num">${d.getDate()}</div>`;
+    pill.onclick = () => { selectedDate = dateStr; renderBookingForm(); };
+    picker.appendChild(pill);
+    count++;
+  }
+  if (!selectedDate) { const first = picker.querySelector('.date-pill'); if(first) first.click(); return; }
+  const bSnap = await get(ref(db, 'bookings'));
+  const bookedSlots = new Set();
+  if (bSnap.exists()) {
+    Object.values(bSnap.val()).forEach(b => {
+      if (b.date === selectedDate && ['pending','accepted'].includes(b.status)) bookedSlots.add(b.time);
+    });
+  }
+  document.getElementById('timeGrid').innerHTML = TIMES.map(tm => {
+    const isBkd = bookedSlots.has(tm);
+    const isSel = selectedTime === tm;
+    return `<div class="time-pill ${isSel?'selected':''} ${isBkd?'booked':''}"
+      onclick="${isBkd?'':'selectTime(\''+tm+'\')'}">${tm}</div>`;
+  }).join('');
+};
+window.selectTime = (t) => { selectedTime = t; renderBookingForm(); };
+window.submitBooking = async () => {
+  if (!selectedDate || !selectedTime) { showToast('toast_select_datetime','error'); return; }
+  const snap = await get(ref(db,'bookings'));
+  let userActive = 0;
+  if (snap.exists()) {
+    Object.values(snap.val()).forEach(b => {
+      if (b.userId === currentUser.uid && ['pending','accepted'].includes(b.status)) userActive++;
+    });
+  }
+  if (userActive >= MAX_CONCURRENT) {
+    showToast('toast_max_booking','error'); return;
+  }
+  const booking = {
+    userId: currentUser.uid, userName: currentUser.displayName || currentUser.email,
+    userEmail: currentUser.email, serviceId: selectedService.id,
+    serviceName: getServiceName(selectedService.id), price: selectedService.price,
+    date: selectedDate, time: selectedTime, status: 'pending', createdAt: Date.now()
+  };
+  await push(ref(db,'bookings'), booking);
+  showToast('toast_booking_success');
+  selectedService = null; selectedDate = null; selectedTime = null;
+  showSection('appointments');
+};
+window.loadMyAppointments = () => {
+  const list = document.getElementById('appointmentsList');
+  list.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  onValue(ref(db,'bookings'), snap => {
+    if (!snap.exists()) { list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>${t('no_appointments')}</p></div>`; return; }
+    const all = Object.entries(snap.val())
+      .filter(([,b]) => b.userId === currentUser.uid)
+      .sort(([,a],[,b]) => b.createdAt - a.createdAt);
+    if (!all.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>${t('no_appointments')}</p></div>`; return; }
+    list.innerHTML = all.map(([id,b]) => `
+      <div class="appt-card ${b.status}">
+        <div class="appt-top"><span class="appt-name">${b.serviceName}</span>
+        <span class="badge ${b.status}">${t(`status_${b.status}`)||b.status}</span></div>
+        <div class="appt-meta"><span>📅 ${b.date}</span><span>🕐 ${b.time}</span><span>💰 ${formatPrice(b.price)}</span></div>
+        ${b.status==='pending' ? `<button class="btn-cancel" onclick="openCancelModal('${id}')">${t('cancel_modal_yes')}</button>` : ''}
+      </div>`).join('');
+  }, { onlyOnce: true });
+};
+window.openCancelModal = (id) => { cancelBookingId = id; document.getElementById('cancelModal').classList.add('open'); };
+window.closeCancelModal = () => { document.getElementById('cancelModal').classList.remove('open'); };
+window.confirmCancel = async () => {
+  await update(ref(db,`bookings/${cancelBookingId}`), { status:'cancelled' });
+  closeCancelModal(); showToast('toast_cancel_success');
+  loadMyAppointments();
+};
+window.loadProfileStats = async () => {
+  const snap = await get(ref(db,'bookings'));
+  let total=0, accepted=0, pending=0;
+  if (snap.exists()) {
+    Object.values(snap.val()).forEach(b => {
+      if (b.userId !== currentUser.uid) return;
+      total++;
+      if (b.status==='accepted') accepted++;
+      if (b.status==='pending')  pending++;
+    });
+  }
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statAccepted').textContent = accepted;
+  document.getElementById('statPending').textContent = pending;
+};
+window.openDrawer = () => { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); };
+window.closeDrawer = () => { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); };
+window.switchAdminTab = (tab) => {
+  document.querySelectorAll('.admin-tab').forEach((t,i) => {
+    const tabs = ['bookings','services','settings'];
+    t.classList.toggle('active', tabs[i]===tab);
+  });
+  ['adminBookings','adminServices','adminSettings'].forEach(id =>
+    document.getElementById(id).style.display = id === 'admin'+tab.charAt(0).toUpperCase()+tab.slice(1) ? 'block' : 'none');
+  updateAllTexts();
+};
+window.filterAdmin = (f) => {
+  adminFilter = f;
+  ['all','pending','accepted','rejected'].forEach(x => {
+    document.getElementById('af-'+x).classList.toggle('selected', x===f);
+  });
+  renderAdminBookings();
+};
+window.loadAdminBookings = () => {
+  onValue(ref(db,'bookings'), snap => {
+    allAdminBookings = snap.exists() ? snap.val() : {};
+    renderAdminBookings();
+  });
+};
+window.renderAdminBookings = () => {
+  const list = document.getElementById('adminBookingsList');
+  let entries = Object.entries(allAdminBookings)
+    .sort(([,a],[,b]) => b.createdAt - a.createdAt);
+  if (adminFilter !== 'all') entries = entries.filter(([,b]) => b.status === adminFilter);
+  if (!entries.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>${t('no_bookings')}</p></div>`; return; }
+  list.innerHTML = entries.map(([id,b]) => `
+    <div class="admin-booking-card">
+      <div class="admin-booking-top">
+        <div><p style="font-size:14px;font-weight:700">${b.userName}</p><p style="font-size:12px;color:var(--text-muted)">${b.userEmail}</p></div>
+        <span class="badge ${b.status}">${t(`status_${b.status}`)||b.status}</span>
+      </div>
+      <div class="appt-meta"><span>✂️ ${b.serviceName}</span><span>📅 ${b.date}</span><span>🕐 ${b.time}</span></div>
+      ${b.status==='pending' ? `<div class="admin-actions"><button class="btn-accept" onclick="adminAction('${id}','accepted')">✓ ${t('filter_accepted')}</button>
+      <button class="btn-reject" onclick="adminAction('${id}','rejected')">✗ ${t('filter_rejected')}</button></div>` : ''}
+    </div>`).join('');
+};
+window.adminAction = async (id, status) => {
+  await update(ref(db,`bookings/${id}`), { status });
+  showToast(status==='accepted' ? 'toast_admin_accept' : 'toast_admin_reject', status==='accepted'?'success':'error');
+};
+window.loadAdminServices = async () => {
+  const snap = await get(ref(db,'services'));
+  let services = snap.exists() ? Object.entries(snap.val()) : DEFAULT_SERVICES.map(s=>[s.id,s]);
+  const list = document.getElementById('adminServicesList');
+  list.innerHTML = services.map(([id,s]) => {
+    const translatedName = getServiceName(id);
+    return `
+      <div class="svc-edit-card">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><span style="font-size:28px">${s.icon||'✂️'}</span><strong>${translatedName}</strong></div>
+        <div class="edit-row"><input class="edit-input" id="sname-${id}" value="${s.name || ''}" placeholder="${t('fullname_label')}"></div>
+        <div class="edit-row"><input class="edit-input" id="sprice-${id}" type="number" value="${s.price}" placeholder="${t('price_label')}">
+        <input class="edit-input" id="sdur-${id}" type="number" value="${s.duration}" placeholder="${t('duration_unit')}"></div>
+        <button class="btn-save" onclick="saveService('${id}')">${t('save_btn')}</button>
+      </div>`;
+  }).join('');
+};
+window.saveService = async (id) => {
+  const name = document.getElementById('sname-'+id).value.trim();
+  const price = +document.getElementById('sprice-'+id).value;
+  const dur = +document.getElementById('sdur-'+id).value;
+  if (!name || !price || !dur) { showToast('toast_fill_fields','error'); return; }
+  await update(ref(db,`services/${id}`), { name, price, duration: dur });
+  showToast('toast_save_service');
+  loadServices(); // refresh client view
+  loadAdminServices(); // refresh admin view to show updated base name (though display uses translation)
+};
+window.loadWorkSettings = async () => {
+  const snap = await get(ref(db,'settings/work'));
+  if (snap.exists()) {
+    workSettings = snap.val();
+    document.getElementById('satToggle').checked = !!workSettings.sat;
+    document.getElementById('sunToggle').checked = !!workSettings.sun;
+  }
+};
+window.saveWorkSettings = async () => {
+  const sat = document.getElementById('satToggle').checked;
+  const sun = document.getElementById('sunToggle').checked;
+  await set(ref(db,'settings/work'), { sat, sun });
+  showToast('toast_save_work');
+};
+window.changeTheme = (main, dark) => {
+  document.documentElement.style.setProperty('--gold', main);
+  document.documentElement.style.setProperty('--gold-dark', dark);
+  document.querySelectorAll('.color-dot').forEach(d =>
+    d.classList.toggle('active', d.style.background === main));
+  showToast('toast_theme_changed');
+};
+// initial language setup
+setLanguage(currentLang);
+</script>
+</body>
+</html>
